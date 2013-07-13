@@ -3992,7 +3992,7 @@ begin
     begin fname := nil; flabel := nil; occur := blck end;
 
 
-  (*compile:*) rewrite(prr); (*comment this out when compiling with pcom *)
+  (*compile:*) assign(prr,'prr'); rewrite(prr); (*comment this out when compiling with pcom *)
   (**********)
   insymbol;
   programme(blockbegsys+statbegsys-[casesy]);
