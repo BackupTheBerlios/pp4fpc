@@ -84,7 +84,7 @@ type                                                    (*describing:*)
                beginsy,ifsy,casesy,repeatsy,whilesy,forsy,withsy,
                gotosy,endsy,elsesy,untilsy,ofsy,dosy,tosy,downtosy,
                thensy,othersy);
-     operator = (mul,rdiv,andop,idiv,imod,plus,minus,orop,ltop,leop,geop,gtop,
+     operatr = (mul,rdiv,andop,idiv,imod,plus,minus,orop,ltop,leop,geop,gtop,
                  neop,eqop,inop,noop);
      setofsys = set of symbol;
      chtp = (letter,number,special,illegal,
@@ -197,7 +197,7 @@ var
                                      **********)
 
     sy: symbol;              (*last symbol*)
-    op: operator;                  (*classification of last symbol*)
+    op: operatr;                  (*classification of last symbol*)
     val: valu;                (*value of last constant*)
     lgth: integer;                (*length of last string constant*)
     id: alpha;                (*last identifier (possibly truncated)*)
@@ -286,8 +286,8 @@ var
     frw: array [1..9] of 1..36(*nr. of res. words + 1*);
     rsy: array [1..35(*nr. of res. words*)] of symbol;
     ssy: array [char] of symbol;
-    rop: array [1..35(*nr. of res. words*)] of operator;
-    sop: array [char] of operator;
+    rop: array [1..35(*nr. of res. words*)] of operatr;
+    sop: array [char] of operatr;
     na:  array [1..35] of alpha;
     mn:  array [0..60] of packed array [1..4] of char;
     sna: array [1..23] of packed array [1..4] of char;
@@ -352,7 +352,7 @@ var
     label 1,2,3;
     var i,k: integer;
         digit: packed array [1..strglgth] of char;
-        string: packed array [1..strglgth] of char;
+        strng: packed array [1..strglgth] of char;
         lvp: csp; test: boolean;
 
     procedure nextch;
@@ -482,20 +482,20 @@ var
         begin lgth := 0; sy := stringconst;  op := noop;
           repeat
             repeat nextch; lgth := lgth + 1;
-                   if lgth <= strglgth then string[lgth] := ch
+                   if lgth <= strglgth then strng[lgth] := ch
             until (eol) or (ch = '''');
             if eol then error(202) else nextch
           until ch <> '''';
-          lgth := lgth - 1;   (*now lgth = nr of chars in string*)
+          lgth := lgth - 1;   (*now lgth = nr of chars in strng*)
           if lgth = 0 then error(205) else
-          if lgth = 1 then val.ival := ord(string[1])
+          if lgth = 1 then val.ival := ord(strng[1])
           else
             begin new(lvp,strg); lvp^.cclass:=strg;
               if lgth > strglgth then
                 begin error(399); lgth := strglgth end;
               with lvp^ do
                 begin slgth := lgth;
-                  for i := 1 to lgth do sval[i] := string[i]
+                  for i := 1 to lgth do sval[i] := strng[i]
                 end;
               val.valp := lvp
             end
@@ -1015,12 +1015,12 @@ var
         else comptypes := true
     end (*comptypes*) ;
 
-    function string(fsp: stp) : boolean;
-    begin string := false;
+    function strng(fsp: stp) : boolean;
+    begin strng := false;
       if fsp <> nil then
         if fsp^.form = arrays then
-          if comptypes(fsp^.aeltype,charptr) then string := true
-    end (*string*) ;
+          if comptypes(fsp^.aeltype,charptr) then strng := true
+    end (*strng*) ;
 
     procedure typ(fsys: setofsys; var fsp: stp; var fsize: addrrange);
       var lsp,lsp1,lsp2: stp; oldtop: disprange; lcp: ctp;
@@ -1070,7 +1070,7 @@ var
                       begin new(lsp,subrange);
                         with lsp^, lcp^ do
                           begin rangetype := idtype; form := subrange;
-                            if string(rangetype) then
+                            if strng(rangetype) then
                               begin error(148); rangetype := nil end;
                             min := values; size := intsize
                           end;
@@ -1087,7 +1087,7 @@ var
                 else
                   begin new(lsp,subrange); lsp^.form := subrange;
                     constant(fsys + [colon],lsp1,lvalu);
-                    if string(lsp1) then
+                    if strng(lsp1) then
                       begin error(148); lsp1 := nil end;
                     with lsp^ do
                       begin rangetype:=lsp1; min:=lvalu; size:=intsize end;
@@ -1178,9 +1178,9 @@ var
                       begin align(lsp1,displ);
                         lcp^.fldaddr := displ;
                         displ := displ+lsp1^.size;
-                        if (lsp1^.form <= subrange) or string(lsp1) then
+                        if (lsp1^.form <= subrange) or strng(lsp1) then
                           begin if comptypes(realptr,lsp1) then error(109)
-                            else if string(lsp1) then error(399);
+                            else if strng(lsp1) then error(399);
                             lcp^.idtype := lsp1; lsp^.tagfieldp := lcp;
                           end
                         else error(110);
@@ -2011,7 +2011,7 @@ var
           if typtr <> nil then
             begin
               case kind of
-                cst:   if string(typtr) then
+                cst:   if strng(typtr) then
                          if cstptrix >= cstoccmax then error(254)
                          else
                            begin cstptrix := cstptrix + 1;
@@ -2371,7 +2371,7 @@ var
                         begin
                           if lsp^.form = scalar then error(399)
                           else
-                            if string(lsp) then
+                            if strng(lsp) then
                               begin len := lsp^.size div charmax;
                                 if default then
                                       gen2(51(*ldc*),1,len);
@@ -2476,7 +2476,7 @@ var
                   if lsp^.form <> tagfld then error(162)
                   else
                     if lsp^.tagfieldp <> nil then
-                      if string(lsp1) or (lsp1 = realptr) then error(159)
+                      if strng(lsp1) or (lsp1 = realptr) then error(159)
                       else
                         if comptypes(lsp^.tagfieldp^.idtype,lsp1) then
                           begin
@@ -2737,13 +2737,13 @@ var
         end (*call*) ;
 
         procedure expression;
-          var lattr: attr; lop: operator; typind: char; lsize: addrrange;
+          var lattr: attr; lop: operatr; typind: char; lsize: addrrange;
 
           procedure simpleexpression(fsys: setofsys);
-            var lattr: attr; lop: operator; signed: boolean;
+            var lattr: attr; lop: operatr; signed: boolean;
 
             procedure term(fsys: setofsys);
-              var lattr: attr; lop: operator;
+              var lattr: attr; lop: operatr;
 
               procedure factor(fsys: setofsys);
                 var lcp: ctp; lvp: csp; varpart: boolean;
@@ -3074,7 +3074,7 @@ var
                             end;
                           arrays:
                             begin
-                              if not string(lattr.typtr)
+                              if not strng(lattr.typtr)
                                 then error(134);
                               typind := 'm'
                             end;
