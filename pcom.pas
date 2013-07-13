@@ -2736,7 +2736,7 @@ var
           else callnonstandard
         end (*call*) ;
 
-        procedure expression;
+        procedure expression(*$IFNDEF PP*)(fsys: setofsys)(*$ENDIF*);
           var lattr: attr; lop: operatr; typind: char; lsize: addrrange;
 
           procedure simpleexpression(fsys: setofsys);
