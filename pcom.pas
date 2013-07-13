@@ -672,7 +672,7 @@ var
     l := flc-1;
     flc := l + k  -  (k+l) mod k
   end (*align*);
-
+(*$IFDEF PP*)
   procedure printtables(fb: boolean);
     (*print data structure and name table*)
     var i, lim: disprange;
@@ -843,7 +843,7 @@ var
     writeln(output);
     if not eol then write(output,' ':chcnt+16)
   end (*printtables*);
-
+(*$ENDIF*)
   procedure genlabel(var nxtlab: integer);
   begin intlabel := intlabel + 1;
     nxtlab := intlabel
@@ -1794,7 +1794,7 @@ var
         begin lcp^.forwdecl := false; mark(markp);
           repeat block(fsys,semicolon,lcp);
             if sy = semicolon then
-              begin if prtables then printtables(false); insymbol;
+              begin (*$IFDEF PP*)if prtables then printtables(false);(*$ENDIF*) insymbol;
                 if not (sy in [beginsy,procsy,funcsy]) then
                   begin error(6); skip(fsys) end
               end
@@ -3557,9 +3557,9 @@ var
                 fextfilep := fextfilep^.nextfile
             end;
           id := saveid;
-          if prtables then
+          (*$IFDEF PP*)if prtables then
             begin writeln(output); printtables(true)
-            end
+            end(*$ENDIF*)
         end;
     end (*body*) ;
 
