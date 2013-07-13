@@ -360,7 +360,7 @@ var
       begin if list then writeln(output); endofline
       end;
       if not eof(input) then
-       begin eol := eoln(input); read(input,ch);
+       begin eol := eoln; if eol then begin ch := ' '; readln end else read(ch);
         if list then write(output,ch);
         chcnt := chcnt + 1
        end
