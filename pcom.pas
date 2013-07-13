@@ -191,7 +191,7 @@ type                                                    (*describing:*)
 (*-------------------------------------------------------------------------*)
 
 var
-    prr: text; (* comment this out when compiling with pcom *)
+    (*$IFNDEF PP*)prr: text;(*$ENDIF*)
                                     (*returned by source program scanner
                                      insymbol:
                                      **********)
@@ -3992,7 +3992,7 @@ begin
     begin fname := nil; flabel := nil; occur := blck end;
 
 
-  (*compile:*) assign(prr,'prr'); rewrite(prr); (*comment this out when compiling with pcom *)
+  (*compile:*) (*$IFNDEF PP*)assign(prr,'prr'); rewrite(prr);(*$ENDIF*)
   (**********)
   insymbol;
   programme(blockbegsys+statbegsys-[casesy]);
