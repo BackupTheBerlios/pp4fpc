@@ -49,7 +49,7 @@ const displimit = 20; maxlevel = 10;
    strglgth    =     16;
    sethigh     =     47;
    setlow      =      0;
-   ordmaxchar  =     63;
+   ordmaxchar  =    255;
    ordminchar  =      0;
    maxint      =  32767;
    lcaftermarkstack = 5;
