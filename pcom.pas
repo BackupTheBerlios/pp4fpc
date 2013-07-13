@@ -426,12 +426,12 @@ var
         begin op := noop; i := 0;
           repeat i := i+1; if i<= digmax then digit[i] := ch; nextch
           until chartp[ch] <> number;
-          if ((ch = '.') and (input^ <> '.')) or (ch = 'e') then
+          if (ch = '.') or (ch = 'e') then
             begin
                   k := i;
                   if ch = '.' then
                     begin k := k+1; if k <= digmax then digit[k] := ch;
-                      nextch; (*if ch = '.' then begin ch := ':'; goto 3 end;*)
+                      nextch; if ch = '.' then begin ch := ':'; goto 3 end;
                       if chartp[ch] <> number then error(201)
                       else
                         repeat k := k + 1;
