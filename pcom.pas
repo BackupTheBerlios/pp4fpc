@@ -3996,5 +3996,5 @@ begin
   (**********)
   insymbol;
   programme(blockbegsys+statbegsys-[casesy]);
-
+  (*$IFNDEF PP*)close(prr);(*$ENDIF*)
 end.
