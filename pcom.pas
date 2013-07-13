@@ -451,7 +451,7 @@ var
                           if k <= digmax then digit[k] := ch; nextch
                         until chartp[ch] <> number
                      end;
-                   new(lvp,reel); sy:= realconst; lvp^.cclass := reel;
+                   new(lvp (*$IFDEF PP*),reel(*$ENDIF*)); sy:= realconst; lvp^.cclass := reel;
                    with lvp^ do
                      begin for i := 1 to strglgth do rval[i] := ' ';
                        if k <= digmax then
@@ -490,7 +490,7 @@ var
           if lgth = 0 then error(205) else
           if lgth = 1 then val.ival := ord(strng[1])
           else
-            begin new(lvp,strg); lvp^.cclass:=strg;
+            begin new(lvp (*$IFDEF PP*),strg(*$ENDIF*)); lvp^.cclass:=strg;
               if lgth > strglgth then
                 begin error(399); lgth := strglgth end;
               with lvp^ do
@@ -874,7 +874,7 @@ var
               if lgth = 1 then lsp := charptr
               else
                 begin
-                  new(lsp,arrays);
+                  new(lsp (*$IFDEF PP*),arrays(*$ENDIF*));
                   with lsp^ do
                     begin aeltype := charptr; inxtype := nil;
                        size := lgth*charsize; form := arrays
@@ -900,7 +900,7 @@ var
                       if lsp = realptr then
                         begin
                           if sign = neg then
-                            begin new(lvp,reel);
+                            begin new(lvp (*$IFDEF PP*),reel(*$ENDIF*));
                               if fvalu.valp^.rval[1] = '-' then
                                 lvp^.rval[1] := '+'
                               else lvp^.rval[1] := '-';
@@ -1037,7 +1037,7 @@ var
             if sy = lparent then
               begin ttop := top;   (*decl. consts local to innermost block*)
                 while display[top].occur <> blck do top := top - 1;
-                new(lsp,scalar,declared);
+                new(lsp (*$IFDEF PP*),scalar,declared(*$ENDIF*));
                 with lsp^ do
                   begin size := intsize; form := scalar;
                     scalkind := declared
@@ -1045,7 +1045,7 @@ var
                 lcp1 := nil; lcnt := 0;
                 repeat insymbol;
                   if sy = ident then
-                    begin new(lcp,konst);
+                    begin new(lcp (*$IFDEF PP*),konst(*$ENDIF*));
                       with lcp^ do
                         begin name := id; idtype := lsp; next := lcp1;
                           values.ival := lcnt; klass := konst
@@ -1067,7 +1067,7 @@ var
                   begin searchid([types,konst],lcp);
                     insymbol;
                     if lcp^.klass = konst then
-                      begin new(lsp,subrange);
+                      begin new(lsp (*$IFDEF PP*),subrange(*$ENDIF*));
                         with lsp^, lcp^ do
                           begin rangetype := idtype; form := subrange;
                             if strng(rangetype) then
@@ -1085,7 +1085,7 @@ var
                       end
                   end (*sy = ident*)
                 else
-                  begin new(lsp,subrange); lsp^.form := subrange;
+                  begin new(lsp (*$IFDEF PP*),subrange(*$ENDIF*)); lsp^.form := subrange;
                     constant(fsys + [colon],lsp1,lvalu);
                     if strng(lsp1) then
                       begin error(148); lsp1 := nil end;
@@ -1121,7 +1121,7 @@ var
           begin nxt := nxt1;
             repeat
               if sy = ident then
-                begin new(lcp,field);
+                begin new(lcp (*$IFDEF PP*),field(*$ENDIF*));
                   with lcp^ do
                     begin name := id; idtype := nil; next := nxt;
                       klass := field
@@ -1157,13 +1157,13 @@ var
           with nxt1^ do
             begin lcp := next; next := nxt; nxt := nxt1; nxt1 := lcp end;
         if sy = casesy then
-          begin new(lsp,tagfld);
+          begin new(lsp (*$IFDEF PP*),tagfld(*$ENDIF*));
             with lsp^ do
               begin tagfieldp := nil; fstvar := nil; form:=tagfld end;
             frecvar := lsp;
             insymbol;
             if sy = ident then
-              begin new(lcp,field);
+              begin new(lcp (*$IFDEF PP*),field(*$ENDIF*));
                 with lcp^ do
                   begin name := id; idtype := nil; klass:=field;
                     next := nil; fldaddr := displ
@@ -1199,7 +1199,7 @@ var
                 repeat constant(fsys + [comma,colon,lparent],lsp3,lvalu);
                   if lsp^.tagfieldp <> nil then
                    if not comptypes(lsp^.tagfieldp^.idtype,lsp3)then error(111);
-                  new(lsp3,variant);
+                  new(lsp3 (*$IFDEF PP*),variant(*$ENDIF*));
                   with lsp3^ do
                     begin nxtvar := lsp1; subvar := lsp2; varval := lvalu;
                       form := variant
@@ -1251,7 +1251,7 @@ var
           if sy in simptypebegsys then simpletype(fsys,fsp,fsize)
           else
     (*^*)     if sy = arrow then
-              begin new(lsp,pointer); fsp := lsp;
+              begin new(lsp (*$IFDEF PP*),pointer(*$ENDIF*)); fsp := lsp;
                 with lsp^ do
                   begin eltype := nil; size := ptrsize; form:=pointer end;
                 insymbol;
@@ -1259,7 +1259,7 @@ var
                   begin prterr := false; (*no error if search not successful*)
                     searchid([types],lcp); prterr := true;
                     if lcp = nil then   (*forward referenced type id*)
-                      begin new(lcp,types);
+                      begin new(lcp (*$IFDEF PP*),types(*$ENDIF*));
                         with lcp^ do
                           begin name := id; idtype := lsp;
                             next := fwptr; klass := types
@@ -1289,7 +1289,7 @@ var
                   begin insymbol;
                     if sy = lbrack then insymbol else error(11);
                     lsp1 := nil;
-                    repeat new(lsp,arrays);
+                    repeat new(lsp (*$IFDEF PP*),arrays(*$ENDIF*));
                       with lsp^ do
                         begin aeltype := lsp1; inxtype := nil; form:=arrays end;
                       lsp1 := lsp;
@@ -1340,7 +1340,7 @@ var
                       else error(250);
                       displ := 0;
                       fieldlist(fsys-[semicolon]+[endsy],lsp1);
-                      new(lsp,records);
+                      new(lsp (*$IFDEF PP*),records(*$ENDIF*));
                       with lsp^ do
                         begin fstfld := display[top].fname;
                           recvar := lsp1; size := displ; form := records
@@ -1366,7 +1366,7 @@ var
                                 if (lmin < setlow) or (lmax > sethigh)
                                   then error(169);
                               end;
-                        new(lsp,power);
+                        new(lsp (*$IFDEF PP*),power(*$ENDIF*));
                         with lsp^ do
                           begin elset:=lsp1; size:=setsize; form:=power end;
                       end
@@ -1420,7 +1420,7 @@ var
       if sy <> ident then
         begin error(2); skip(fsys + [ident]) end;
       while sy = ident do
-        begin new(lcp,konst);
+        begin new(lcp (*$IFDEF PP*),konst(*$ENDIF*));
           with lcp^ do
             begin name := id; idtype := nil; next := nil; klass:=konst end;
           insymbol;
@@ -1443,7 +1443,7 @@ var
       if sy <> ident then
         begin error(2); skip(fsys + [ident]) end;
       while sy = ident do
-        begin new(lcp,types);
+        begin new(lcp (*$IFDEF PP*),types(*$ENDIF*));
           with lcp^ do
             begin name := id; idtype := nil; klass := types end;
           insymbol;
@@ -1486,7 +1486,7 @@ var
       repeat
         repeat
           if sy = ident then
-            begin new(lcp,vars);
+            begin new(lcp (*$IFDEF PP*),vars(*$ENDIF*));
               with lcp^ do
                begin name := id; next := nxt; klass := vars;
                   idtype := nil; vkind := actual; vlev := level
@@ -1547,7 +1547,7 @@ var
                   begin error(399);
                     repeat insymbol;
                       if sy = ident then
-                        begin new(lcp,proc,declared,formal);
+                        begin new(lcp (*$IFDEF PP*),proc,declared,formal(*$ENDIF*));
                           with lcp^ do
                             begin name := id; idtype := nil; next := lcp1;
                               pflev := level (*beware of parameter procedures*);
@@ -1570,7 +1570,7 @@ var
                       begin error(399); lcp2 := nil;
                         repeat insymbol;
                           if sy = ident then
-                            begin new(lcp,func,declared,formal);
+                            begin new(lcp (*$IFDEF PP*),func,declared,formal(*$ENDIF*));
                               with lcp^ do
                                 begin name := id; idtype := nil; next := lcp2;
                                   pflev := level (*beware param funcs*);
@@ -1618,7 +1618,7 @@ var
                         count := 0;
                         repeat
                           if sy = ident then
-                            begin new(lcp,vars);
+                            begin new(lcp (*$IFDEF PP*),vars(*$ENDIF*));
                               with lcp^ do
                                 begin name:=id; idtype:=nil; klass:=vars;
                                   vkind := lkind; next := lcp2; vlev := level;
@@ -1715,8 +1715,8 @@ var
             end;
           if not forw then
             begin
-              if fsy = procsy then new(lcp,proc,declared,actual)
-              else new(lcp,func,declared,actual);
+              if fsy = procsy then new(lcp (*$IFDEF PP*),proc,declared,actual(*$ENDIF*))
+              else new(lcp (*$IFDEF PP*),func,declared,actual(*$ENDIF*));
               with lcp^ do
                 begin name := id; idtype := nil;
                   externl := false; pflev := level; genlabel(lbname);
@@ -2804,7 +2804,7 @@ var
                             begin
                               if lgth = 1 then typtr := charptr
                               else
-                                begin new(lsp,arrays);
+                                begin new(lsp (*$IFDEF PP*),arrays(*$ENDIF*));
                                   with lsp^ do
                                     begin aeltype := charptr; form:=arrays;
                                       inxtype := nil; size := lgth*charsize
@@ -2828,7 +2828,7 @@ var
                         end;
               (*[*)     lbrack:
                         begin insymbol; cstpart := [ ]; varpart := false;
-                          new(lsp,power);
+                          new(lsp (*$IFDEF PP*),power(*$ENDIF*));
                           with lsp^ do
                             begin elset:=nil;size:=setsize;form:=power end;
                           if sy = rbrack then
@@ -2872,7 +2872,7 @@ var
                           if varpart then
                             begin
                               if cstpart <> [ ] then
-                                begin new(lvp,pset); lvp^.pval := cstpart;
+                                begin new(lvp (*$IFDEF PP*),pset(*$ENDIF*)); lvp^.pval := cstpart;
                                   lvp^.cclass := pset;
                                   if cstptrix = cstoccmax then error(254)
                                   else
@@ -2884,7 +2884,7 @@ var
                                 end
                             end
                           else
-                            begin new(lvp,pset); lvp^.pval := cstpart;
+                            begin new(lvp (*$IFDEF PP*),pset(*$ENDIF*)); lvp^.pval := cstpart;
                               lvp^.cclass := pset;
                               gattr.cval.valp := lvp
                             end
@@ -3643,25 +3643,25 @@ var
   begin                                                 (*type underlying:*)
                                                         (******************)
 
-    new(intptr,scalar,standard);                             (*integer*)
+    new(intptr (*$IFDEF PP*),scalar,standard(*$ENDIF*));                             (*integer*)
     with intptr^ do
       begin size := intsize; form := scalar; scalkind := standard end;
-    new(realptr,scalar,standard);                            (*real*)
+    new(realptr (*$IFDEF PP*),scalar,standard(*$ENDIF*));                            (*real*)
     with realptr^ do
       begin size := realsize; form := scalar; scalkind := standard end;
-    new(charptr,scalar,standard);                            (*char*)
+    new(charptr (*$IFDEF PP*),scalar,standard(*$ENDIF*));                            (*char*)
     with charptr^ do
       begin size := charsize; form := scalar; scalkind := standard end;
-    new(boolptr,scalar,declared);                            (*boolean*)
+    new(boolptr (*$IFDEF PP*),scalar,declared(*$ENDIF*));                            (*boolean*)
     with boolptr^ do
       begin size := boolsize; form := scalar; scalkind := declared end;
-    new(nilptr,pointer);                                     (*nil*)
+    new(nilptr (*$IFDEF PP*),pointer(*$ENDIF*));                                     (*nil*)
     with nilptr^ do
       begin eltype := nil; size := ptrsize; form := pointer end;
-    new(parmptr,scalar,standard); (*for alignment of parameters*)
+    new(parmptr (*$IFDEF PP*),scalar,standard(*$ENDIF*)); (*for alignment of parameters*)
     with parmptr^ do
       begin size := parmsize; form := scalar; scalkind := standard end ;
-    new(textptr,files);                                      (*text*)
+    new(textptr (*$IFDEF PP*),files(*$ENDIF*));                                      (*text*)
     with textptr^ do
       begin filtype := charptr; size := charsize; form := files end
   end (*enterstdtypes*) ;
@@ -3671,25 +3671,25 @@ var
   begin                                                      (*name:*)
                                                              (*******)
 
-    new(cp,types);                                          (*integer*)
+    new(cp (*$IFDEF PP*),types(*$ENDIF*));                                          (*integer*)
     with cp^ do
       begin name := 'integer '; idtype := intptr; klass := types end;
     enterid(cp);
-    new(cp,types);                                          (*real*)
+    new(cp (*$IFDEF PP*),types(*$ENDIF*));                                          (*real*)
     with cp^ do
       begin name := 'real    '; idtype := realptr; klass := types end;
     enterid(cp);
-    new(cp,types);                                          (*char*)
+    new(cp (*$IFDEF PP*),types(*$ENDIF*));                                          (*char*)
     with cp^ do
       begin name := 'char    '; idtype := charptr; klass := types end;
     enterid(cp);
-    new(cp,types);                                          (*boolean*)
+    new(cp (*$IFDEF PP*),types(*$ENDIF*));                                          (*boolean*)
     with cp^ do
       begin name := 'boolean '; idtype := boolptr; klass := types end;
     enterid(cp);
     cp1 := nil;
     for i := 1 to 2 do
-      begin new(cp,konst);                                  (*false,true*)
+      begin new(cp (*$IFDEF PP*),konst(*$ENDIF*));                                  (*false,true*)
         with cp^ do
           begin name := na[i]; idtype := boolptr;
             next := cp1; values.ival := i - 1; klass := konst
@@ -3697,14 +3697,14 @@ var
         enterid(cp); cp1 := cp
       end;
     boolptr^.fconst := cp;
-    new(cp,konst);                                          (*nil*)
+    new(cp (*$IFDEF PP*),konst(*$ENDIF*));                                          (*nil*)
     with cp^ do
       begin name := 'nil     '; idtype := nilptr;
         next := nil; values.ival := 0; klass := konst
       end;
     enterid(cp);
     for i := 3 to 4 do
-      begin new(cp,vars);                                    (*input,output*)
+      begin new(cp (*$IFDEF PP*),vars(*$ENDIF*));                                    (*input,output*)
         with cp^ do
           begin name := na[i]; idtype := textptr; klass := vars;
             vkind := actual; next := nil; vlev := 1;
@@ -3713,7 +3713,7 @@ var
         enterid(cp)
       end;
     for i:=33 to 34 do
-      begin new(cp,vars);                                    (*prd,prr files*)
+      begin new(cp (*$IFDEF PP*),vars(*$ENDIF*));                                    (*prd,prr files*)
          with cp^ do
            begin name := na[i]; idtype := textptr; klass := vars;
               vkind := actual; next := nil; vlev := 1;
@@ -3722,7 +3722,7 @@ var
          enterid(cp)
       end;
     for i := 5 to 16 do
-      begin new(cp,proc,standard);                      (*get,put,reset*)
+      begin new(cp (*$IFDEF PP*),proc,standard(*$ENDIF*));                      (*get,put,reset*)
         with cp^ do                                     (*rewrite,read*)
           begin name := na[i]; idtype := nil;           (*write,pack*)
             next := nil; key := i - 4;                  (*unpack,pack*)
@@ -3730,14 +3730,14 @@ var
           end;
         enterid(cp)
       end;
-    new(cp,proc,standard);
+    new(cp (*$IFDEF PP*),proc,standard(*$ENDIF*));
     with cp^ do
       begin name:=na[35]; idtype:=nil;
             next:= nil; key:=13;
             klass:=proc; pfdeckind:= standard
       end; enterid(cp);
     for i := 17 to 26 do
-      begin new(cp,func,standard);                          (*abs,sqr,trunc*)
+      begin new(cp (*$IFDEF PP*),func,standard(*$ENDIF*));                          (*abs,sqr,trunc*)
         with cp^ do                                        (*odd,ord,chr*)
           begin name := na[i]; idtype := nil;            (*pred,succ,eof*)
             next := nil; key := i - 16;
@@ -3745,13 +3745,13 @@ var
           end;
         enterid(cp)
       end;
-    new(cp,vars);                     (*parameter of predeclared functions*)
+    new(cp (*$IFDEF PP*),vars(*$ENDIF*));                     (*parameter of predeclared functions*)
     with cp^ do
       begin name := '        '; idtype := realptr; klass := vars;
         vkind := actual; next := nil; vlev := 1; vaddr := 0
       end;
     for i := 27 to 32 do
-      begin new(cp1,func,declared,actual);                (*sin,cos,exp*)
+      begin new(cp1 (*$IFDEF PP*),func,declared,actual(*$ENDIF*));                (*sin,cos,exp*)
         with cp1^ do                                      (*sqrt,ln,arctan*)
           begin name := na[i]; idtype := realptr; next := cp;
             forwdecl := false; externl := true; pflev := 0; pfname := i - 12;
@@ -3763,31 +3763,31 @@ var
 
   procedure enterundecl;
   begin
-    new(utypptr,types);
+    new(utypptr (*$IFDEF PP*),types(*$ENDIF*));
     with utypptr^ do
       begin name := '        '; idtype := nil; klass := types end;
-    new(ucstptr,konst);
+    new(ucstptr (*$IFDEF PP*),konst(*$ENDIF*));
     with ucstptr^ do
       begin name := '        '; idtype := nil; next := nil;
         values.ival := 0; klass := konst
       end;
-    new(uvarptr,vars);
+    new(uvarptr (*$IFDEF PP*),vars(*$ENDIF*));
     with uvarptr^ do
       begin name := '        '; idtype := nil; vkind := actual;
         next := nil; vlev := 0; vaddr := 0; klass := vars
       end;
-    new(ufldptr,field);
+    new(ufldptr (*$IFDEF PP*),field(*$ENDIF*));
     with ufldptr^ do
       begin name := '        '; idtype := nil; next := nil; fldaddr := 0;
         klass := field
       end;
-    new(uprcptr,proc,declared,actual);
+    new(uprcptr (*$IFDEF PP*),proc,declared,actual(*$ENDIF*));
     with uprcptr^ do
       begin name := '        '; idtype := nil; forwdecl := false;
         next := nil; externl := false; pflev := 0; genlabel(pfname);
         klass := proc; pfdeckind := declared; pfkind := actual
       end;
-    new(ufctptr,func,declared,actual);
+    new(ufctptr (*$IFDEF PP*),func,declared,actual(*$ENDIF*));
     with ufctptr^ do
       begin name := '        '; idtype := nil; next := nil;
         forwdecl := false; externl := false; pflev := 0; genlabel(pfname);
