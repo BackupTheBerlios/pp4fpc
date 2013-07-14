@@ -625,7 +625,7 @@ begin (*callsp*)
                                  6: write(output,store[sp-2].vc:
                                       store[sp-1].vi);
                                  7: errori(' write on prd file       ');
-                                 8: write(prr,chr(store[sp-2].vi):
+                                 8: write(prr,store[sp-2].vc:
                                       store[sp-1].vi);
                             end;
                             sp:=sp-3
