@@ -18,8 +18,8 @@ involved have already been taken into account.
 (*$I pinthelper.inc*)
 
 label 1;
-const codemax     = 8650;
-      pcmax       = 17500;
+const codemax     = 9000;
+      pcmax       = 18000;
       maxstk      = 13650; (* size of variable store *)
       overi       = 13655; (* size of integer constant table = 5 *)
       overr       = 13660; (* size of real constant table = 5 *)
@@ -406,11 +406,11 @@ procedure load;
           6 (*sto*): typesymbol;
 
           27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,
-          48,49,50,51,52,53,54,58:  ;
+          48,49,50,51,52,53,54,58,60:  ;
 
-          (*ord,chr*)
-          59,60: goto 1;
-
+          59 (*ord*): case ch of 'a': p:=0; 'i': p:=1;
+                                 'r': errorl(' ordr not implemented    ');
+                                 'b': p:=3; 'c': p:=6; end;
           61 (*ujc*): ; (*must have same length as ujp*)
 
       end; (*case*)
@@ -1002,12 +1002,12 @@ begin (* main *)
 
           58 (*stp*): interpreting := false;
 
-          59 (*ord*): (*only used to change the tagfield*)
-                      begin
-                      end;
+          59 (*ord*): if p=0 then store[sp].vi := store[sp].va
+                      else if p=3 then store[sp].vi := ord(store[sp].vb)
+                      else if p=6 then store[sp].vi := ord(store[sp].vc);
 
-          60 (*chr*): begin
-                      end;
+          60 (*chr*): store[sp].vc := chr(store[sp].vi);
+
 
           61 (*ujc*): errori(' case - error            ');
     end
