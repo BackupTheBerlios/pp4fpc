@@ -208,7 +208,7 @@ procedure load;
             begin read(prd,ch);(* first character of line*)
                   case ch of
                        'i': readln(prd);
-                       'l': begin read(prd,x);
+                       'l': begin ReadInt(prd,x);
                                   if not eoln(prd) then read(prd,ch);
                                   if ch='=' then read(prd,labelvalue)
                                             else labelvalue:= pc;
@@ -362,7 +362,7 @@ procedure load;
                            '(': begin  op := 8;  p := 4;
                                    s := [ ];  read(prd,ch);
                                    while ch<>')' do
-                                   begin read(prd,s1,ch); s := s + [s1]
+                                   begin ReadInt(prd,s1); read(prd,ch); s := s + [s1]
                                    end;
                                    store[scp].vs := s;  q := overr;
                                    repeat  q := q+1  until store[q].vs=s;
