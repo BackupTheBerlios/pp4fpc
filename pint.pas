@@ -896,7 +896,7 @@ begin (* main *)
                             else i:=store[sp].vi;
                             if (i < store[q-1].vi) or (i > store[q].vi) then
                               errori(' value out of range      '); end;
-          27 (*eof*): begin  i := store[sp].vi;
+          27 (*eof*): begin  i := store[sp].va;
                        if i=inputadr then
                        begin store[sp].vb := eof(input);
                        end else errori(' code in error     ')
