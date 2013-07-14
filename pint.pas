@@ -240,11 +240,11 @@ procedure load;
             read(prd,x); lookup(x)
       end;(*labelsearch*)
 
-      procedure getname;
+      procedure getname; var i: integer;
       begin  word[1] := ch;
          read(prd,word[2],word[3]);
          if not eoln(prd) then read(prd,ch) (*next character*);
-         pack(word,1,name)
+         for i := 1 to 10 do name[i] := word[i];
       end; (*getname*)
 
       procedure typesymbol;
