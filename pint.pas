@@ -891,11 +891,11 @@ begin (* main *)
                           (store[sp].va > (maxstr-q)) then
                          errori(' bad pointer value       ');
 
-          96,97,98,99,
-          26 (*chk*): if (store[sp].vi < store[q-1].vi) or
-                         (store[sp].vi > store[q].vi) then
-                        errori(' value out of range      ');
-
+          98,99,26 (*chk*): begin if op=98 then i:=ord(store[sp].vb)
+                            else if op=99 then i:=ord(store[sp].vc)
+                            else i:=store[sp].vi;
+                            if (i < store[q-1].vi) or (i > store[q].vi) then
+                              errori(' value out of range      '); end;
           27 (*eof*): begin  i := store[sp].vi;
                        if i=inputadr then
                        begin store[sp].vb := eof(input);
