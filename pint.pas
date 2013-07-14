@@ -175,7 +175,7 @@ procedure load;
                                    of a list of future references*)
           endlist: boolean;
    begin
-      if labeltab[x].st=defined then errorl(' duplicated label  ')
+      if labeltab[x].st=defined then errorl(' duplicated label        ')
       else begin
              if labeltab[x].val<>-1 then (*forward reference(s)*)
              begin curr:= labeltab[x].val; endlist:= false;
@@ -546,12 +546,12 @@ begin (*callsp*)
                            5: getfile(input);
                            6: errori(' get on output file      ');
                            7: getfile(prd);
-                           8: errori(' get on prr file   ')
+                           8: errori(' get on prr file         ')
                       end;
            1 (*put*): case store[sp].va of
-                           5: errori(' put on read file ');
+                           5: errori(' put on read file        ');
                            6: putfile(output);
-                           7: errori(' put on prd file   ');
+                           7: errori(' put on prd file         ');
                            8: putfile(prr)
                       end;
            2 (*rst*): begin
@@ -573,7 +573,7 @@ begin (*callsp*)
            4 (*new*): begin ad:= np-store[sp].va;
                       (*top of stack gives the length in units of storage *)
                             if ad <= ep then
-                              errori(' store overflow     ');
+                              errori(' store overflow          ');
                             np:= ad; ad:= store[sp-1].va;
                             store[ad].va := np;
                             sp:=sp-2
@@ -594,9 +594,9 @@ begin (*callsp*)
                       end;
            7 (*eln*): begin case store[sp].va of
                                  5: line:= eoln(input);
-                                 6: errori(' eoln output file   ');
+                                 6: errori(' eoln output file        ');
                                  7: line:=eoln(prd);
-                                 8: errori(' eoln on prr file   ')
+                                 8: errori(' eoln on prr file        ')
                             end;
                             store[sp].vb := line
                       end;
@@ -634,19 +634,19 @@ begin (*callsp*)
                            5: readi(input);
                            6: errori(' read on output file     ');
                            7: readi(prd);
-                           8: errori(' read on prr file ')
+                           8: errori(' read on prr file        ')
                       end;
            12(*rdr*): case store[sp].va of
                            5: readr(input);
                            6: errori(' read on output file     ');
                            7: readr(prd);
-                           8: errori(' read on prr file ')
+                           8: errori(' read on prr file        ')
                       end;
            13(*rdc*): case store[sp].va of
                            5: readc(input);
                            6: errori(' read on output file     ');
                            7: readc(prd);
-                           8: errori(' read on prr file ')
+                           8: errori(' read on prr file        ')
                       end;
            14(*sin*): store[sp].vr:= sin(store[sp].vr);
            15(*cos*): store[sp].vr:= cos(store[sp].vr);
@@ -764,11 +764,11 @@ begin (* main *)
 
           13 (*ent*): if p = 1 then
                         begin sp := mp + q; (*q = length of dataseg*)
-                          if sp > np then errori(' store overflow         ');
+                          if sp > np then errori(' store overflow          ');
                         end
                       else
                         begin ep := sp+q;
-                          if ep > np then errori(' store overflow         ');
+                          if ep > np then errori(' store overflow          ');
                         end;
                         (*q = max space required on stack*)
 
@@ -839,7 +839,7 @@ begin (* main *)
                          6: store[sp].vb := store[sp].vc > store[sp+1].vc;
                          2: store[sp].vb := store[sp].vr > store[sp+1].vr;
                          3: store[sp].vb := store[sp].vb > store[sp+1].vb;
-                         4: errori(' set inclusion         ');
+                         4: errori(' set inclusion           ');
                          5: begin  compare;
                               store[sp].vb := not b and
                                 (store[i1+i].vi > store[i2+i].vi)
@@ -899,7 +899,7 @@ begin (* main *)
           27 (*eof*): begin  i := store[sp].va;
                        if i=inputadr then
                        begin store[sp].vb := eof(input);
-                       end else errori(' code in error     ')
+                       end else errori(' code in error           ')
                       end;
 
           28 (*adi*): begin  sp := sp-1;
@@ -1009,7 +1009,7 @@ begin (* main *)
           60 (*chr*): begin
                       end;
 
-          61 (*ujc*): errori(' case - error         ');
+          61 (*ujc*): errori(' case - error            ');
     end
   end; (*while interpreting*)
 
