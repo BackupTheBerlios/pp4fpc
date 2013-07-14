@@ -297,8 +297,8 @@ var
 
     intlabel,mxint10,digmax: integer;
 (*-------------------------------------------------------------------------*)
-  procedure mark(var p: marktype); begin end;
-  procedure release(p: marktype); begin end;
+  (*$IFNDEF PP*)procedure mark(var p: marktype); begin end;(*$ENDIF*)
+  (*$IFNDEF PP*)procedure release(p: marktype); begin end;(*$ENDIF*)
 
   procedure endofline;
     var lastpos,freepos,currpos,currnmr,f,k: integer;
