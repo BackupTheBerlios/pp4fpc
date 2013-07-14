@@ -15,7 +15,7 @@ However, where the number of units of storage has been computed by the
 compiler, the value must not be corrected, since the lengths of the types
 involved have already been taken into account.
                                                                  *)
-(*$I getbuf.inc*)
+(*$I pinthelper.inc*)
 
 label 1;
 const codemax     = 8650;
