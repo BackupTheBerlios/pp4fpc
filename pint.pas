@@ -510,7 +510,7 @@ procedure callsp;
          ad:= store[sp-1].va;
          store[ad].vc := c;
          store[store[sp].va].vc := GetBufCh(f);
-         store[store[sp].va].vi := ord(GetBufCh(f));
+
          sp:= sp-2
    end;(*readc*)
 
