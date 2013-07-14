@@ -1,4 +1,4 @@
-(*$IFDEF PP*)(*$c+,t-,d-,l-*)(*$ENDIF*)
+(*$IFDEF PP*)(*$c+,t-,d+,l-*)(*$ENDIF*)
  (***********************************************
   *                                             *
   *      Portable Pascal compiler               *
