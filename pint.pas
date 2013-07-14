@@ -461,7 +461,7 @@ end; (*pmd*)
 
 procedure errori(strng: beta);
 begin writeln; writeln(strng);
-      pmd; goto 1
+      pmd; halt
 end;(*errori*)
 
 function base(ld :integer):address;
