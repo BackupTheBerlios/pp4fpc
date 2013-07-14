@@ -161,7 +161,7 @@ procedure load;
          for i:= 1 to 10 do word[i]:= ' ';
          for i:= 0 to maxlabel do
              with labeltab[i] do begin val:=-1; st:= entered end;
-         reset(prd);
+         assign(prd, 'prd'); reset(prd);
    end;(*init*)
 
    procedure errorl(strng: beta); (*error in loading*)
@@ -662,7 +662,7 @@ begin (*callsp*)
 end;(*callsp*)
 
 begin (* main *)
-  rewrite(prr);
+  assign(prr, 'prr'); rewrite(prr);
   load; (* assembles and stores code *)
   (* writeln(output); for testing *)
   pc := 0; sp := -1; mp := 0; np := maxstk+1; ep := 5;
