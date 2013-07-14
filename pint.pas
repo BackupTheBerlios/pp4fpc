@@ -164,9 +164,9 @@ procedure load;
          reset(prd);
    end;(*init*)
 
-   procedure errorl(string: beta); (*error in loading*)
+   procedure errorl(strng: beta); (*error in loading*)
    begin writeln;
-      write(string);
+      write(strng);
       halt
    end; (*errorl*)
 
@@ -459,8 +459,8 @@ begin
    while s>=np do pt;
 end; (*pmd*)
 
-procedure errori(string: beta);
-begin writeln; writeln(string);
+procedure errori(strng: beta);
+begin writeln; writeln(strng);
       pmd; goto 1
 end;(*errori*)
 
