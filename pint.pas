@@ -15,7 +15,7 @@ However, where the number of units of storage has been computed by the
 compiler, the value must not be corrected, since the lengths of the types
 involved have already been taken into account.
                                                                  *)
-
+(*$I getbuf.inc*)
 
 label 1;
 const codemax     = 8650;
@@ -492,7 +492,7 @@ procedure callsp;
       var ad: address;
    begin ad:= store[sp-1].va;
          read(f,store[ad].vi);
-         store[store[sp].va].vc := f^;
+         store[store[sp].va].vc := GetBufCh(f);
          sp:= sp-2
    end;(*readi*)
 
@@ -500,7 +500,7 @@ procedure callsp;
       var ad: address;
    begin ad:= store[sp-1].va;
          read(f,store[ad].vr);
-         store[store[sp].va].vc := f^;
+         store[store[sp].va].vc := GetBufCh(f);
          sp:= sp-2
    end;(*readr*)
 
@@ -509,8 +509,8 @@ procedure callsp;
    begin read(f,c);
          ad:= store[sp-1].va;
          store[ad].vc := c;
-         store[store[sp].va].vc := f^;
-         store[store[sp].va].vi := ord(f^);
+         store[store[sp].va].vc := GetBufCh(f);
+         store[store[sp].va].vi := ord(GetBufCh(f));
          sp:= sp-2
    end;(*readc*)
 
@@ -529,7 +529,7 @@ procedure callsp;
    procedure getfile(var f: text);
       var ad: address; ch: char;
    begin ad:=store[sp].va;
-         read(f,ch); store[ad].vc := f^;
+         read(f,ch); store[ad].vc := GetBufCh(f);
          sp:=sp-1
    end;(*getfile*)
 
@@ -560,11 +560,11 @@ begin (*callsp*)
                       end;
            3 (*rln*): begin case store[sp].va of
                                  5: begin readln(input);
-                                      store[inputadr].vc := input^
+                                      store[inputadr].vc := GetBufCh(input)
                                     end;
                                  6: errori(' readln on output file   ');
                                  7: begin readln(input);
-                                      store[inputadr].vc := input^
+                                      store[inputadr].vc := GetBufCh(input)
                                     end;
                                  8: errori(' readln on prr file      ')
                             end;
@@ -666,8 +666,8 @@ begin (* main *)
   load; (* assembles and stores code *)
   (* writeln(output); for testing *)
   pc := 0; sp := -1; mp := 0; np := maxstk+1; ep := 5;
-  store[inputadr].vc := input^;
-  store[prdadr].vc := prd^;
+  store[inputadr].vc := GetBufCh(input);
+  store[prdadr].vc := GetBufCh(prd);
   interpreting := true;
 
   while interpreting do
