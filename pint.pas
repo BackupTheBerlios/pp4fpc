@@ -563,8 +563,8 @@ begin (*callsp*)
                                       store[inputadr].vc := GetBufCh(input)
                                     end;
                                  6: errori(' readln on output file   ');
-                                 7: begin readln(input);
-                                      store[inputadr].vc := GetBufCh(input)
+                                 7: begin readln(prd);
+                                      store[prdadr].vc := GetBufCh(prd)
                                     end;
                                  8: errori(' readln on prr file      ')
                             end;
