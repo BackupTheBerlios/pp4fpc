@@ -1013,5 +1013,5 @@ begin (* main *)
     end
   end; (*while interpreting*)
 
-1 :
+1 : close(prr);
 end.
