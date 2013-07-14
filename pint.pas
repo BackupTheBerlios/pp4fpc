@@ -527,16 +527,16 @@ procedure callsp;
    end;(*writestr*)
 
    procedure getfile(var f: text);
-      var ad: address;
+      var ad: address; ch: char;
    begin ad:=store[sp].va;
-         get(f); store[ad].vc := f^;
+         read(f,ch); store[ad].vc := f^;
          sp:=sp-1
    end;(*getfile*)
 
    procedure putfile(var f: text);
       var ad: address;
    begin ad:= store[sp].va;
-         f^:= store[ad].vc; put(f);
+         write(f,store[ad].vc);
          sp:= sp-1;
    end;(*putfile*)
 
