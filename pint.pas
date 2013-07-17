@@ -996,10 +996,10 @@ begin (* main *)
           56 (*lca*): begin  sp := sp+1;
                        store[sp].va := q;
                       end;
-
-          100,101,102,103,104,
-          57 (*dec*): store[sp].vi := store[sp].vi-q;
-
+          101 (*decr*): store[sp].vr := store[sp].vr-q;
+          103 (*decb*): store[sp].vb := pred(store[sp].vb);
+          104 (*decc*): store[sp].vc := chr(ord(store[sp].vc)-q);
+          57  (*deci*): store[sp].vi := store[sp].vi-q;
           58 (*stp*): interpreting := false;
 
           59 (*ord*): if p=0 then store[sp].vi := store[sp].va
