@@ -739,10 +739,10 @@ begin (* main *)
                       (* q is a number of storage units *)
                       store[sp] := store[ad]
                      end;
-
-          90,91,92,93,94,
-          10 (*inc*): store[sp].vi := store[sp].vi+q;
-
+          90 (*inca*): store[sp].va := store[sp].va+q; 91 (*incr*): store[sp].vr := store[sp].vr+q;
+          93 (*incb*): store[sp].vb := succ(store[sp].vb);
+          94 (*incc*): store[sp].vc := chr(ord(store[sp].vc)+q);
+          10 (*inci*): store[sp].vi := store[sp].vi+q;
           11 (*mst*): begin (*p=level of calling procedure minus level of called
                               procedure + 1;  set dl and sl, increment sp*)
                        (* then length of this element is
