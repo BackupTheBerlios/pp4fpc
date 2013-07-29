@@ -11,6 +11,8 @@ function GetBufCh(var f: Text): Char;
 type
   DeviceFunc = function(var f: TTextRec): Integer;
 begin
+  Eof; {force Delphi to open standard input file if first I/O access}
+
   {Load the buffer if empty}
   if (TTextRec(f).mode = fmInput)
     and (TTextRec(f).BufPos >= TTextRec(f).BufEnd) then
