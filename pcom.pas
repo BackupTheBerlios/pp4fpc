@@ -1892,7 +1892,7 @@ var
                   5: begin write(prr,'(');
                        with cstptr[fp2]^ do
                          for k := setlow to sethigh do
-                           if k in pval then write(prr,k:3);
+                           if k in pval then write(prr,' ',k);
                        writeln(prr,')')
                      end
                 end
@@ -1950,7 +1950,7 @@ var
           begin putic;
             write(prr,mn[fop]: 4);
             gentypindicator(fsp);
-            writeln(prr,fp1:3+5*ord(abs(fp1)>99),fp2:8);
+            writeln(prr,' ',fp1,' ',fp2);
           end;
         ic := ic + 1; mes(fop)
       end (*gen2t*);
