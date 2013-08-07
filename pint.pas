@@ -1,6 +1,6 @@
 (*Assembler and interpreter of Pascal code*)
 (*K. Jensen, N. Wirth, Ch. Jacobi, ETH May 76*)
-
+(* Ported to Free Pascal and Delphi by Christope Staiesse, 08/2013 *)
 program pcode(input,output,prd,prr);
 
 (* Note for the implementation.

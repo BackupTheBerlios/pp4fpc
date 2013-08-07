@@ -27,7 +27,7 @@
   * Steven.Pemberton@cwi.nl                     *
   *                                             *
   ***********************************************)
-
+(* Ported to Free Pascal and Delphi by Christope Staiesse, 08/2013 *)
 program pascalcompiler(input,output,prr);
 
 const displimit = 20; maxlevel = 10;
