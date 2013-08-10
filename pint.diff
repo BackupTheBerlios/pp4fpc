@@ -1,0 +1,741 @@
+commit f7a0baab8e5073cfb5893106352da2a8f12a4c58
+Author: Christophe Staïesse <chastai@skynet.be>
+Date:   Sat Jul 13 11:31:58 2013 +0200
+
+    Rename .p file extensions to .pas
+
+commit 49259726c5f6d452c8fdc1cd29b77cb82b2b5a56
+Author: Christophe Staïesse <chastai@skynet.be>
+Date:   Sat Jul 13 11:36:37 2013 +0200
+
+    TAB expansion
+
+commit 067de1ee39c788eae125d31bdf108c94a08e6608
+Author: Christophe Staïesse <chastai@skynet.be>
+Date:   Sun Jul 14 09:01:21 2013 +0200
+
+    Rename string to strng
+
+diff --git a/pint.pas b/pint.pas
+index 1f0bea6..69bf667 100644
+--- a/pint.pas
++++ b/pint.pas
+@@ -164,9 +164,9 @@ procedure load;
+          reset(prd);
+    end;(*init*)
+ 
+-   procedure errorl(string: beta); (*error in loading*)
++   procedure errorl(strng: beta); (*error in loading*)
+    begin writeln;
+-      write(string);
++      write(strng);
+       halt
+    end; (*errorl*)
+ 
+@@ -459,8 +459,8 @@ begin
+    while s>=np do pt;
+ end; (*pmd*)
+ 
+-procedure errori(string: beta);
+-begin writeln; writeln(string);
++procedure errori(strng: beta);
++begin writeln; writeln(strng);
+       pmd; goto 1
+ end;(*errori*)
+ 
+
+commit 9f268670ac0bf28fc827c06c77e087b7873dbb40
+Author: Christophe Staïesse <chastai@skynet.be>
+Date:   Sun Jul 14 09:02:36 2013 +0200
+
+    Bind prr and prd file variables to filenames
+    
+    This is required by FPC and Delphi before reset or rewrite.
+
+diff --git a/pint.pas b/pint.pas
+index 69bf667..6e49415 100644
+--- a/pint.pas
++++ b/pint.pas
+@@ -161,7 +161,7 @@ procedure load;
+          for i:= 1 to 10 do word[i]:= ' ';
+          for i:= 0 to maxlabel do
+              with labeltab[i] do begin val:=-1; st:= entered end;
+-         reset(prd);
++         assign(prd, 'prd'); reset(prd);
+    end;(*init*)
+ 
+    procedure errorl(strng: beta); (*error in loading*)
+@@ -662,7 +662,7 @@ begin (*callsp*)
+ end;(*callsp*)
+ 
+ begin (* main *)
+-  rewrite(prr);
++  assign(prr, 'prr'); rewrite(prr);
+   load; (* assembles and stores code *)
+   (* writeln(output); for testing *)
+   pc := 0; sp := -1; mp := 0; np := maxstk+1; ep := 5;
+
+commit 8de4633daac9f07baadf9e0d88390357b87a618b
+Author: Christophe Staïesse <chastai@skynet.be>
+Date:   Sun Jul 14 09:03:55 2013 +0200
+
+    Close prr at the end
+    
+    Just to be sure...
+
+diff --git a/pint.pas b/pint.pas
+index 6e49415..b1a711a 100644
+--- a/pint.pas
++++ b/pint.pas
+@@ -1013,5 +1013,5 @@ begin (* main *)
+     end
+   end; (*while interpreting*)
+ 
+-1 :
++1 : close(prr);
+ end.
+
+commit bb2f7a7fa6d2964aa6233037af4c392192c99db4
+Author: Christophe Staïesse <chastai@skynet.be>
+Date:   Sun Jul 14 09:42:16 2013 +0200
+
+    Solve arch dependency in CHKI/B/C impl.
+    
+    The old code was expecting that integers, booleans and chars be
+    interchangeable.
+    
+    Also, removed tests for opcodes 96 (CHK with reals) and 97 (CHK with
+    sets) as these instructions doesn't exist.
+
+diff --git a/pint.pas b/pint.pas
+index b1a711a..14c8d55 100644
+--- a/pint.pas
++++ b/pint.pas
+@@ -891,11 +891,11 @@ begin (* main *)
+                           (store[sp].va > (maxstr-q)) then
+                          errori(' bad pointer value       ');
+ 
+-          96,97,98,99,
+-          26 (*chk*): if (store[sp].vi < store[q-1].vi) or
+-                         (store[sp].vi > store[q].vi) then
+-                        errori(' value out of range      ');
+-
++          98,99,26 (*chk*): begin if op=98 then i:=ord(store[sp].vb)
++                            else if op=99 then i:=ord(store[sp].vc)
++                            else i:=store[sp].vi;
++                            if (i < store[q-1].vi) or (i > store[q].vi) then
++                              errori(' value out of range      '); end;
+           27 (*eof*): begin  i := store[sp].vi;
+                        if i=inputadr then
+                        begin store[sp].vb := eof(input);
+
+commit 0fbaed55d1043b0f1e176abafbdcd41f06c695eb
+Author: Christophe Staïesse <chastai@skynet.be>
+Date:   Sun Jul 14 11:26:17 2013 +0200
+
+    Solve an arch dependence problem in EOF impl.
+    
+    The top of the stack contains the address of the file buffer. It's
+    .va that we want not .vi. This was a problem if .va and .vi were not
+    same size.
+
+diff --git a/pint.pas b/pint.pas
+index 14c8d55..bab214c 100644
+--- a/pint.pas
++++ b/pint.pas
+@@ -896,7 +896,7 @@ begin (* main *)
+                             else i:=store[sp].vi;
+                             if (i < store[q-1].vi) or (i > store[q].vi) then
+                               errori(' value out of range      '); end;
+-          27 (*eof*): begin  i := store[sp].vi;
++          27 (*eof*): begin  i := store[sp].va;
+                        if i=inputadr then
+                        begin store[sp].vb := eof(input);
+                        end else errori(' code in error     ')
+
+commit d13b41677756c3738f6c2c96f7ea8d2e8c8bd6b2
+Author: Christophe Staïesse <chastai@skynet.be>
+Date:   Sun Jul 14 13:20:58 2013 +0200
+
+    Replace the pack() call by a for loop
+    
+    As pack is not supported by FPC nor Delphi.
+    The length of name is hardcoded.
+
+diff --git a/pint.pas b/pint.pas
+index bab214c..0f32a7a 100644
+--- a/pint.pas
++++ b/pint.pas
+@@ -240,11 +240,11 @@ procedure load;
+             read(prd,x); lookup(x)
+       end;(*labelsearch*)
+ 
+-      procedure getname;
++      procedure getname; var i: integer;
+       begin  word[1] := ch;
+          read(prd,word[2],word[3]);
+          if not eoln(prd) then read(prd,ch) (*next character*);
+-         pack(word,1,name)
++         for i := 1 to 10 do name[i] := word[i];
+       end; (*getname*)
+ 
+       procedure typesymbol;
+
+commit 333fbddaeae70f40535f5cbb56331d3128928a03
+Author: Christophe Staïesse <chastai@skynet.be>
+Date:   Sun Jul 14 13:23:51 2013 +0200
+
+    Replace a interproc goto end of prog by halt
+    
+    Interproc gotos are not supported by Delphi nor FPC.
+    PRR won't be closed but it's acceptable as the interpreted program
+    crashed.
+
+diff --git a/pint.pas b/pint.pas
+index 0f32a7a..db7d500 100644
+--- a/pint.pas
++++ b/pint.pas
+@@ -461,7 +461,7 @@ end; (*pmd*)
+ 
+ procedure errori(strng: beta);
+ begin writeln; writeln(strng);
+-      pmd; goto 1
++      pmd; halt
+ end;(*errori*)
+ 
+ function base(ld :integer):address;
+
+commit 3a4e7b4a29654bc8b1a020256407a9ad8905677c
+Author: Christophe Staïesse <chastai@skynet.be>
+Date:   Sun Jul 14 13:37:43 2013 +0200
+
+    Adjust string lit in calls to errori and errorl
+    
+    to make the arg compatible with beta (25 chars).
+
+diff --git a/pint.pas b/pint.pas
+index db7d500..1ca33c5 100644
+--- a/pint.pas
++++ b/pint.pas
+@@ -175,7 +175,7 @@ procedure load;
+                                    of a list of future references*)
+           endlist: boolean;
+    begin
+-      if labeltab[x].st=defined then errorl(' duplicated label  ')
++      if labeltab[x].st=defined then errorl(' duplicated label        ')
+       else begin
+              if labeltab[x].val<>-1 then (*forward reference(s)*)
+              begin curr:= labeltab[x].val; endlist:= false;
+@@ -546,12 +546,12 @@ begin (*callsp*)
+                            5: getfile(input);
+                            6: errori(' get on output file      ');
+                            7: getfile(prd);
+-                           8: errori(' get on prr file   ')
++                           8: errori(' get on prr file         ')
+                       end;
+            1 (*put*): case store[sp].va of
+-                           5: errori(' put on read file ');
++                           5: errori(' put on read file        ');
+                            6: putfile(output);
+-                           7: errori(' put on prd file   ');
++                           7: errori(' put on prd file         ');
+                            8: putfile(prr)
+                       end;
+            2 (*rst*): begin
+@@ -573,7 +573,7 @@ begin (*callsp*)
+            4 (*new*): begin ad:= np-store[sp].va;
+                       (*top of stack gives the length in units of storage *)
+                             if ad <= ep then
+-                              errori(' store overflow     ');
++                              errori(' store overflow          ');
+                             np:= ad; ad:= store[sp-1].va;
+                             store[ad].va := np;
+                             sp:=sp-2
+@@ -594,9 +594,9 @@ begin (*callsp*)
+                       end;
+            7 (*eln*): begin case store[sp].va of
+                                  5: line:= eoln(input);
+-                                 6: errori(' eoln output file   ');
++                                 6: errori(' eoln output file        ');
+                                  7: line:=eoln(prd);
+-                                 8: errori(' eoln on prr file   ')
++                                 8: errori(' eoln on prr file        ')
+                             end;
+                             store[sp].vb := line
+                       end;
+@@ -634,19 +634,19 @@ begin (*callsp*)
+                            5: readi(input);
+                            6: errori(' read on output file     ');
+                            7: readi(prd);
+-                           8: errori(' read on prr file ')
++                           8: errori(' read on prr file        ')
+                       end;
+            12(*rdr*): case store[sp].va of
+                            5: readr(input);
+                            6: errori(' read on output file     ');
+                            7: readr(prd);
+-                           8: errori(' read on prr file ')
++                           8: errori(' read on prr file        ')
+                       end;
+            13(*rdc*): case store[sp].va of
+                            5: readc(input);
+                            6: errori(' read on output file     ');
+                            7: readc(prd);
+-                           8: errori(' read on prr file ')
++                           8: errori(' read on prr file        ')
+                       end;
+            14(*sin*): store[sp].vr:= sin(store[sp].vr);
+            15(*cos*): store[sp].vr:= cos(store[sp].vr);
+@@ -764,11 +764,11 @@ begin (* main *)
+ 
+           13 (*ent*): if p = 1 then
+                         begin sp := mp + q; (*q = length of dataseg*)
+-                          if sp > np then errori(' store overflow         ');
++                          if sp > np then errori(' store overflow          ');
+                         end
+                       else
+                         begin ep := sp+q;
+-                          if ep > np then errori(' store overflow         ');
++                          if ep > np then errori(' store overflow          ');
+                         end;
+                         (*q = max space required on stack*)
+ 
+@@ -839,7 +839,7 @@ begin (* main *)
+                          6: store[sp].vb := store[sp].vc > store[sp+1].vc;
+                          2: store[sp].vb := store[sp].vr > store[sp+1].vr;
+                          3: store[sp].vb := store[sp].vb > store[sp+1].vb;
+-                         4: errori(' set inclusion         ');
++                         4: errori(' set inclusion           ');
+                          5: begin  compare;
+                               store[sp].vb := not b and
+                                 (store[i1+i].vi > store[i2+i].vi)
+@@ -899,7 +899,7 @@ begin (* main *)
+           27 (*eof*): begin  i := store[sp].va;
+                        if i=inputadr then
+                        begin store[sp].vb := eof(input);
+-                       end else errori(' code in error     ')
++                       end else errori(' code in error           ')
+                       end;
+ 
+           28 (*adi*): begin  sp := sp-1;
+@@ -1009,7 +1009,7 @@ begin (* main *)
+           60 (*chr*): begin
+                       end;
+ 
+-          61 (*ujc*): errori(' case - error         ');
++          61 (*ujc*): errori(' case - error            ');
+     end
+   end; (*while interpreting*)
+ 
+
+commit 5594a5b1cc7228366c254d42973f7834ec989318
+Author: Christophe Staïesse <chastai@skynet.be>
+Date:   Sun Jul 14 14:36:32 2013 +0200
+
+    Replace Get and Put standard calls
+    
+    as not supported by FPC nor Delphi.
+
+diff --git a/pint.pas b/pint.pas
+index 1ca33c5..edeac0b 100644
+--- a/pint.pas
++++ b/pint.pas
+@@ -527,16 +527,16 @@ procedure callsp;
+    end;(*writestr*)
+ 
+    procedure getfile(var f: text);
+-      var ad: address;
++      var ad: address; ch: char;
+    begin ad:=store[sp].va;
+-         get(f); store[ad].vc := f^;
++         read(f,ch); store[ad].vc := f^;
+          sp:=sp-1
+    end;(*getfile*)
+ 
+    procedure putfile(var f: text);
+       var ad: address;
+    begin ad:= store[sp].va;
+-         f^:= store[ad].vc; put(f);
++         write(f,store[ad].vc);
+          sp:= sp-1;
+    end;(*putfile*)
+ 
+
+commit e5f5e09877881088f17c0e443c07952ed214631e
+Author: Christophe Staïesse <chastai@skynet.be>
+Date:   Sun Jul 14 14:38:25 2013 +0200
+
+    Replace file buffer accesses by calls to GetBufCh
+    
+    As accessing file buffer variable through the caret syntax is not
+    supported in FPC nor Delphi.
+    
+    GetBufCh is implemented in getbuf.inc and makes use of TTextRec to
+    access file buffers.
+
+diff --git a/pint.pas b/pint.pas
+index edeac0b..729f782 100644
+--- a/pint.pas
++++ b/pint.pas
+@@ -15,7 +15,7 @@ However, where the number of units of storage has been computed by the
+ compiler, the value must not be corrected, since the lengths of the types
+ involved have already been taken into account.
+                                                                  *)
+-
++(*$I getbuf.inc*)
+ 
+ label 1;
+ const codemax     = 8650;
+@@ -492,7 +492,7 @@ procedure callsp;
+       var ad: address;
+    begin ad:= store[sp-1].va;
+          read(f,store[ad].vi);
+-         store[store[sp].va].vc := f^;
++         store[store[sp].va].vc := GetBufCh(f);
+          sp:= sp-2
+    end;(*readi*)
+ 
+@@ -500,7 +500,7 @@ procedure callsp;
+       var ad: address;
+    begin ad:= store[sp-1].va;
+          read(f,store[ad].vr);
+-         store[store[sp].va].vc := f^;
++         store[store[sp].va].vc := GetBufCh(f);
+          sp:= sp-2
+    end;(*readr*)
+ 
+@@ -509,8 +509,8 @@ procedure callsp;
+    begin read(f,c);
+          ad:= store[sp-1].va;
+          store[ad].vc := c;
+-         store[store[sp].va].vc := f^;
+-         store[store[sp].va].vi := ord(f^);
++         store[store[sp].va].vc := GetBufCh(f);
++         store[store[sp].va].vi := ord(GetBufCh(f));
+          sp:= sp-2
+    end;(*readc*)
+ 
+@@ -529,7 +529,7 @@ procedure callsp;
+    procedure getfile(var f: text);
+       var ad: address; ch: char;
+    begin ad:=store[sp].va;
+-         read(f,ch); store[ad].vc := f^;
++         read(f,ch); store[ad].vc := GetBufCh(f);
+          sp:=sp-1
+    end;(*getfile*)
+ 
+@@ -560,11 +560,11 @@ begin (*callsp*)
+                       end;
+            3 (*rln*): begin case store[sp].va of
+                                  5: begin readln(input);
+-                                      store[inputadr].vc := input^
++                                      store[inputadr].vc := GetBufCh(input)
+                                     end;
+                                  6: errori(' readln on output file   ');
+                                  7: begin readln(input);
+-                                      store[inputadr].vc := input^
++                                      store[inputadr].vc := GetBufCh(input)
+                                     end;
+                                  8: errori(' readln on prr file      ')
+                             end;
+@@ -666,8 +666,8 @@ begin (* main *)
+   load; (* assembles and stores code *)
+   (* writeln(output); for testing *)
+   pc := 0; sp := -1; mp := 0; np := maxstk+1; ep := 5;
+-  store[inputadr].vc := input^;
+-  store[prdadr].vc := prd^;
++  store[inputadr].vc := GetBufCh(input);
++  store[prdadr].vc := GetBufCh(prd);
+   interpreting := true;
+ 
+   while interpreting do
+
+commit 2f644bede4aafb5608f9cf7c9dfd418f1d78355f
+Author: Christophe Staïesse <chastai@skynet.be>
+Date:   Sun Jul 14 15:50:13 2013 +0200
+
+    Rename getbuf.inc to pinthelper.inc
+
+diff --git a/pint.pas b/pint.pas
+index 729f782..ef7530a 100644
+--- a/pint.pas
++++ b/pint.pas
+@@ -15,7 +15,7 @@ However, where the number of units of storage has been computed by the
+ compiler, the value must not be corrected, since the lengths of the types
+ involved have already been taken into account.
+                                                                  *)
+-(*$I getbuf.inc*)
++(*$I pinthelper.inc*)
+ 
+ label 1;
+ const codemax     = 8650;
+
+commit 8db01ee0af866c603274cedb30bdc4a36c4f5261
+Author: Christophe Staïesse <chastai@skynet.be>
+Date:   Sun Jul 14 15:54:33 2013 +0200
+
+    Replace Read(Integer) by ISO-like equivalent
+    
+    In ISO Pascal, only the characters forming the number are read whereas
+    in Delphi and Free Pascal, the characters are read until the next blank.
+    
+    This means that with '123=456', Read(Int) would return 123 in ISO and
+    the next char to be read would be '='. And would generate an error with
+    a Borland-like compiler as '123=' is not a number.
+    
+    The ISO behaviour is needed in two places:
+      - when reading a label as it can be followed directly by '='
+      - when reading a set literal as it can be followed by ')'
+
+diff --git a/pint.pas b/pint.pas
+index ef7530a..04a312b 100644
+--- a/pint.pas
++++ b/pint.pas
+@@ -208,7 +208,7 @@ procedure load;
+             begin read(prd,ch);(* first character of line*)
+                   case ch of
+                        'i': readln(prd);
+-                       'l': begin read(prd,x);
++                       'l': begin ReadInt(prd,x);
+                                   if not eoln(prd) then read(prd,ch);
+                                   if ch='=' then read(prd,labelvalue)
+                                             else labelvalue:= pc;
+@@ -362,7 +362,7 @@ procedure load;
+                            '(': begin  op := 8;  p := 4;
+                                    s := [ ];  read(prd,ch);
+                                    while ch<>')' do
+-                                   begin read(prd,s1,ch); s := s + [s1]
++                                   begin ReadInt(prd,s1); read(prd,ch); s := s + [s1]
+                                    end;
+                                    store[scp].vs := s;  q := overr;
+                                    repeat  q := q+1  until store[q].vs=s;
+
+commit 2e1c33c05016697d111b7af2151c3ae363709fd0
+Author: Christophe Staïesse <chastai@skynet.be>
+Date:   Sun Jul 14 16:13:03 2013 +0200
+
+    Fix a bug in WRC impl.
+    
+    Assumed that chars and integers were interchangeable.
+
+diff --git a/pint.pas b/pint.pas
+index 04a312b..0b37e28 100644
+--- a/pint.pas
++++ b/pint.pas
+@@ -625,7 +625,7 @@ begin (*callsp*)
+                                  6: write(output,store[sp-2].vc:
+                                       store[sp-1].vi);
+                                  7: errori(' write on prd file       ');
+-                                 8: write(prr,chr(store[sp-2].vi):
++                                 8: write(prr,store[sp-2].vc:
+                                       store[sp-1].vi);
+                             end;
+                             sp:=sp-3
+
+commit d7d68755f999beabcab886d19d96f0cbc0aa49f4
+Author: Christophe Staïesse <chastai@skynet.be>
+Date:   Sun Jul 14 16:18:25 2013 +0200
+
+    Fix a bug in RLN impl.
+    
+    On ReadLn(Prd), was using Input instead of Prd.
+
+diff --git a/pint.pas b/pint.pas
+index 0b37e28..33f34af 100644
+--- a/pint.pas
++++ b/pint.pas
+@@ -563,8 +563,8 @@ begin (*callsp*)
+                                       store[inputadr].vc := GetBufCh(input)
+                                     end;
+                                  6: errori(' readln on output file   ');
+-                                 7: begin readln(input);
+-                                      store[inputadr].vc := GetBufCh(input)
++                                 7: begin readln(prd);
++                                      store[prdadr].vc := GetBufCh(prd)
+                                     end;
+                                  8: errori(' readln on prr file      ')
+                             end;
+
+commit 799351ae2d929b0498251d2a78238eaeb0fc061d
+Author: Christophe Staïesse <chastai@skynet.be>
+Date:   Sun Jul 14 16:27:41 2013 +0200
+
+    Fix a bug in readc
+    
+    Readc implements Read(Char). The char was stored also as integer.
+
+diff --git a/pint.pas b/pint.pas
+index 33f34af..f9ceca3 100644
+--- a/pint.pas
++++ b/pint.pas
+@@ -510,7 +510,7 @@ procedure callsp;
+          ad:= store[sp-1].va;
+          store[ad].vc := c;
+          store[store[sp].va].vc := GetBufCh(f);
+-         store[store[sp].va].vi := ord(GetBufCh(f));
++
+          sp:= sp-2
+    end;(*readc*)
+ 
+
+commit d4f9aadf4a06717342295312864a91c539dca37b
+Author: Christophe Staïesse <chastai@skynet.be>
+Date:   Sun Jul 14 21:02:01 2013 +0200
+
+    Fix arch dependency with ORD and CHR instr.
+    
+    ORD and CHR are NOOP in this implementation as it is assumed that
+    integers, chars and booleans are interchangeable.
+    
+    CHR (opcode 60) is now assembled without operands and its
+    implementation copies the .vc field into .vi.
+    
+    ORD (opcode 59) is assembled with a type operand. ORDR can be generated
+    by the compiler but I won't implement it for now. The implementation
+    copies the corresponding field to .vi.
+    
+    The assembled code is longer now as CHR and ORD are assembled so I had
+    to increase the code store to be able to run pcom.
+    
+    An advantage to this is that the instruction numbering (i labels) the
+    compiler generates are now accurate.
+    
+    This modification is based on the work of Scott Moore.
+
+diff --git a/pint.pas b/pint.pas
+index f9ceca3..6a8d72d 100644
+--- a/pint.pas
++++ b/pint.pas
+@@ -18,8 +18,8 @@ involved have already been taken into account.
+ (*$I pinthelper.inc*)
+ 
+ label 1;
+-const codemax     = 8650;
+-      pcmax       = 17500;
++const codemax     = 9000;
++      pcmax       = 18000;
+       maxstk      = 13650; (* size of variable store *)
+       overi       = 13655; (* size of integer constant table = 5 *)
+       overr       = 13660; (* size of real constant table = 5 *)
+@@ -406,11 +406,11 @@ procedure load;
+           6 (*sto*): typesymbol;
+ 
+           27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,
+-          48,49,50,51,52,53,54,58:  ;
+-
+-          (*ord,chr*)
+-          59,60: goto 1;
++          48,49,50,51,52,53,54,58,60:  ;
+ 
++          59 (*ord*): case ch of 'a': p:=0; 'i': p:=1;
++                                 'r': errorl(' ordr not implemented    ');
++                                 'b': p:=3; 'c': p:=6; end;
+           61 (*ujc*): ; (*must have same length as ujp*)
+ 
+       end; (*case*)
+@@ -1002,12 +1002,12 @@ begin (* main *)
+ 
+           58 (*stp*): interpreting := false;
+ 
+-          59 (*ord*): (*only used to change the tagfield*)
+-                      begin
+-                      end;
++          59 (*ord*): if p=0 then store[sp].vi := store[sp].va
++                      else if p=3 then store[sp].vi := ord(store[sp].vb)
++                      else if p=6 then store[sp].vi := ord(store[sp].vc);
++
++          60 (*chr*): store[sp].vc := chr(store[sp].vi);
+ 
+-          60 (*chr*): begin
+-                      end;
+ 
+           61 (*ujc*): errori(' case - error            ');
+     end
+
+commit 31c660cbfcdfb9ce256f26fc6961f7345c312bb5
+Author: Christophe Staïesse <chastai@skynet.be>
+Date:   Wed Jul 17 16:45:18 2013 +0200
+
+    Fix arch dependency in INC implementation
+    
+    As in other places, it was assumed that integers, chars, booleans and
+    even reals were interchangeable, so the INC impl constisted in
+    incrementing the .vi field.
+    
+    Also, removed INC on set as this instruction doesn't exist.
+    
+    Based on the work of Scott Moore
+
+diff --git a/pint.pas b/pint.pas
+index 6a8d72d..e0bdda9 100644
+--- a/pint.pas
++++ b/pint.pas
+@@ -739,10 +739,10 @@ begin (* main *)
+                       (* q is a number of storage units *)
+                       store[sp] := store[ad]
+                      end;
+-
+-          90,91,92,93,94,
+-          10 (*inc*): store[sp].vi := store[sp].vi+q;
+-
++          90 (*inca*): store[sp].va := store[sp].va+q; 91 (*incr*): store[sp].vr := store[sp].vr+q;
++          93 (*incb*): store[sp].vb := succ(store[sp].vb);
++          94 (*incc*): store[sp].vc := chr(ord(store[sp].vc)+q);
++          10 (*inci*): store[sp].vi := store[sp].vi+q;
+           11 (*mst*): begin (*p=level of calling procedure minus level of called
+                               procedure + 1;  set dl and sl, increment sp*)
+                        (* then length of this element is
+
+commit 00ad39385b1947a235ad6836e48b5d1d7072ab9d
+Author: Christophe Staïesse <chastai@skynet.be>
+Date:   Wed Jul 17 16:52:04 2013 +0200
+
+    Fix arch dependency in DEC implementation
+    
+    As for DEC, it was assumed that integers, chars, booleans and even
+    reals were interchangeable, so the DEC impl constisted in decrementing
+    the .vi field.
+    
+    Also, removed DEC on set as this instruction doesn't exist and DEC on
+    adress as this instruction is never generated by the compiler.
+    
+    Based on the work of Scott Moore.
+
+diff --git a/pint.pas b/pint.pas
+index e0bdda9..9adc33f 100644
+--- a/pint.pas
++++ b/pint.pas
+@@ -996,10 +996,10 @@ begin (* main *)
+           56 (*lca*): begin  sp := sp+1;
+                        store[sp].va := q;
+                       end;
+-
+-          100,101,102,103,104,
+-          57 (*dec*): store[sp].vi := store[sp].vi-q;
+-
++          101 (*decr*): store[sp].vr := store[sp].vr-q;
++          103 (*decb*): store[sp].vb := pred(store[sp].vb);
++          104 (*decc*): store[sp].vc := chr(ord(store[sp].vc)-q);
++          57  (*deci*): store[sp].vi := store[sp].vi-q;
+           58 (*stp*): interpreting := false;
+ 
+           59 (*ord*): if p=0 then store[sp].vi := store[sp].va
+
+commit bbc6067fd37c14a90877990dfc6fa34848c7316c
+Author: Christophe Staïesse <chastai@skynet.be>
+Date:   Wed Aug 7 10:50:25 2013 +0200
+
+    Add modification notices to pint.pas and pcom.pas
+
+diff --git a/pint.pas b/pint.pas
+index 9adc33f..426d826 100644
+--- a/pint.pas
++++ b/pint.pas
+@@ -1,6 +1,6 @@
+ (*Assembler and interpreter of Pascal code*)
+ (*K. Jensen, N. Wirth, Ch. Jacobi, ETH May 76*)
+-
++(* Ported to Free Pascal and Delphi by Christope Staiesse, 08/2013 *)
+ program pcode(input,output,prd,prr);
+ 
+ (* Note for the implementation.
