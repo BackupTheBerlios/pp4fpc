@@ -169,6 +169,9 @@ Under Windows
 
 FPC.EXE is used to compile with Free Pascal and DCC32.EXE with Delphi.
 
+Free Pascal have 16-bit integers by default so you will need to use the
+-Mobjfpc or -Mdelphi switches to get 32-bit integers.
+
 1) Compile the compiler and the interpreter:
     
     C:\pp4fpc\> fpc pcom.pas (or dcc32 pcom.pas with Delphi)
@@ -210,6 +213,9 @@ C:\pp4fpc\> unix2dos < pcom.pas > pcom_win.pas
 
 Under Linux (and probably Mac OS X, xBSD, ...)
 ----------------------------------------------
+
+Note that Free Pascal have 16-bit integers by default so you will need to use
+the -Mobjfpc or -Mdelphi switches to get 32-bit integers.
 
 Simply do make or:
 
