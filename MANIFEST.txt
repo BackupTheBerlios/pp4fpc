@@ -1,0 +1,15 @@
+diff.pas        - a toy diff tool
+errormsg.txt    - list of pcom error messages
+Makefile        - to build and test pcom on Linux
+MANIFEST.txt    - this file
+pcom.diff       - commit history of pcom.pas
+pcom.orig.pas   - pcom.pas version from the 'Pascal Implementation' book
+pcom.pas        - pcom.pas compilable by Free Pascal
+pint.diff       - commit history of pint.pas
+pinthelper.inc  - helper routines for pint.pas
+pint.orig.pas   - original pint.pas
+pint.pas        - pint.pas version from the 'Pascal Implementation' book
+ppp.pas         - a toy preprocessor
+README.txt      - to read first
+sieve.pas       - an example program
+unix2dos.pas    - convert Unix line endings to Windows line endings
