@@ -30,7 +30,34 @@ dependencies and to make Pascal-P4 compilable by Free Pascal and Delphi while
 keeping the changes to a minimum and preserving the line numbering as much as
 possible.
 
+WEBSITE
+
+The project is hosted at BerliOS: http://developer.berlios.de/projects/pp4fpc/
+
+You will have access to the latest release, a bug tracking tool, RSS feeds
+and forums.
+
+Note that the website uses a self-signed SSL certificate. The fingerprint is
+shown at the bottom of the login page.
+
+GIT
+
+git has been used to track the changes. The URL of the git repository is
+git://git.berlios.de/pp4fpc . You can also browse the repository on the
+project Website.
+
+The commit history is also available in the files pcom.diff
+(changes made to pcom.pas, the compiler) and pint.diff (changes made to
+pint.pas, the interpreter).
+
+HELP
+
+The documentation is somewhat succinct but I will be happy to answer questions
+on the forum.
+
 SUMMARY OF THE CHANGES MADE TO THE COMPILER
+
+The file pcom.diff contains a copy of the commit history.
 
 The two main problems preventing Free Pascal or Delphi to compile pcom.pas
 were the use of tag-field parameters in calls to new (resolved in commit
@@ -65,6 +92,8 @@ Commits:
  - Fix number alignment problems in code generator (commit 2cad116)
 
 SUMMARY OF THE CHANGES MADE TO THE INTERPRETER
+
+The file pint.diff contains a copy of the commit history.
 
 The main problems in pint.pas were:
 
@@ -249,6 +278,21 @@ SOME LIMITATIONS OF PASCAL-P
  - cannot declare file variables. prd is an auxiliary input text file and prr
    an auxiliary output text file and are opened at the start of the program
    by the interpreter.
+
+FUTURE OF THE PROJECT
+
+I would like:
+ - a Yacc grammar to document the grammar recognized by pcom (I am working on
+   this)
+ - a documentation of the virtual machine
+ - implementations of the interpreter in different languages.
+ - more example programs
+
+SIMILAR PROJECTS
+
+Pascal-P5
+  Scott Moore have reworked Pascal-P4 to make it an actual ISO Pascal compiler
+  See http://www.standardpascal.org/p5.html
 
 LICENSE
 
