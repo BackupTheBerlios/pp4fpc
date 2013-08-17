@@ -1,5 +1,7 @@
+CHANGELOG.txt   - Changelog
 diff.pas        - a toy diff tool
 errormsg.txt    - list of pcom error messages
+grammar/        - Yacc grammar for Pascal-P
 Makefile        - to build and test pcom on Linux
 MANIFEST.txt    - this file
 pcom.diff       - commit history of pcom.pas

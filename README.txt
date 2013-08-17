@@ -5,6 +5,8 @@ The Pascal-P4 compiler ported to Free Pascal and Delphi.
 
 By Christophe Staiesse <chastai@skynet.be>, 4 August 2013
 
+Updated 2013/08/17.
+
 INTRODUCTION
 
 Pascal-P4 consists of a Pascal compiler written in itself and generating
@@ -285,11 +287,14 @@ SOME LIMITATIONS OF PASCAL-P
    an auxiliary output text file and are opened at the start of the program
    by the interpreter.
 
+SIDE PROJECTS
+
+A Yacc grammar for Pascal-P: see grammar/pascalp.y
+
 FUTURE OF THE PROJECT
 
 I would like:
- - a Yacc grammar to document the grammar recognized by pcom (I am working on
-   this)
+ - a Yacc grammar to document the grammar recognized by pcom [DONE]
  - a documentation of the virtual machine
  - implementations of the interpreter in different languages.
  - more example programs
@@ -309,8 +314,9 @@ pint.pas is credited to Kathleen Jensen, Niklaus Wirth and Christian Jacobi.
 As far as I know, pcom.pas and pint.pas have been released without restriction
 of use.
 
-diff.pas, ppp.pas, sieve.pas and unix2dos.pas have been written by Christophe
-Staiesse and are licensed under this MIT license:
+diff.pas, ppp.pas, sieve.pas, unix2dos.pas, grammar/pascalp.y and
+grammar/pascalp.l have been written by Christophe Staiesse and are licensed
+under this MIT license:
 
     Copyright (c) 2013 by Christophe Staiesse
 
