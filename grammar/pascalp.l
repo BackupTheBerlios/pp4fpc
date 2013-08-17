@@ -33,74 +33,74 @@
 
 [ \t\n]
 
-"(*"    		    BEGIN COMMENT;
+"(*"                    BEGIN COMMENT;
 <COMMENT>(.|\n)
-<COMMENT>"*)"       BEGIN INITIAL;
+<COMMENT>"*)"           BEGIN INITIAL;
 
-[0-9]+		        return INTCONST;
-[0-9]+(\.[0-9]+)?(e[+-]?[0-9]+)?	return REALCONST;
+[0-9]+                  return INTCONST;
+[0-9]+(\.[0-9]+)?(e[+-]?[0-9]+)?        return REALCONST;
 
-''                  yyerror("empty string literal");
-'([^']|'')*'        return STRINGCONST; /* string or char literal */
+''                      yyerror("empty string literal");
+'([^']|'')*'            return STRINGCONST; /* string or char literal */
 
-".."		        return COLON; /* .. and : are interchangeable in Pascal-P */
-":"	    	        return COLON;
-":="        		return BECOMES;
-"."	            	return PERIOD;
-"<"	               	return LTOP;
-"<="        		return LEOP;
-"<>"        		return NEOP;
-">"	             	return GTOP;
-">="        		return GEOP;
-"("         		return LPARENT;
-"+"	               	return PLUS;
-"-"	            	return MINUS;
-"*"	               	return MUL;
-"/"	            	return RDIV;
-")"	               	return RPARENT;
-"="	            	return EQOP;
-","	               	return COMMA;
-"["	               	return LBRACK;
-"]"	               	return RBRACK;
-"^"     	    	return ARROW;
-";"	               	return SEMICOLON;
+".."                    return COLON; /* .. and : are interchangeable in Pascal-P */
+":"                     return COLON;
+":="                    return BECOMES;
+"."                     return PERIOD;
+"<"                     return LTOP;
+"<="                    return LEOP;
+"<>"                    return NEOP;
+">"                     return GTOP;
+">="                    return GEOP;
+"("                     return LPARENT;
+"+"                     return PLUS;
+"-"                     return MINUS;
+"*"                     return MUL;
+"/"                     return RDIV;
+")"                     return RPARENT;
+"="                     return EQOP;
+","                     return COMMA;
+"["                     return LBRACK;
+"]"                     return RBRACK;
+"^"                     return ARROW;
+";"                     return SEMICOLON;
 
-"program"	        return PROGRAMSY;
-"label"		        return LABELSY;
-"procedure"	        return PROCEDURESY;
-"const"		        return CONSTSY;
-"type"		        return TYPESY;
-"array"		        return ARRAYSY;
-"packed"	        return PACKEDSY;
-"of"		        return OFSY;
-"end"		        return ENDSY;
-"file"		        return FILESY;
-"record"	        return RECORDSY;
-"set"		        return SETSY;
-"var"       		return VARSY;
-"case"      		return CASESY;
-"forward"       	return FORWARDSY;
-"function"      	return FUNCTIONSY;
-"begin"	        	return BEGINSY;
-"else"	        	return ELSESY;
-"if"	        	return IFSY;
-"then"	        	return THENSY;
-"do"	        	return DOSY;
-"downto"        	return DOWNTOSY;
-"for"	        	return FORSY;
-"repeat"        	return REPEATSY;
-"while"     		return WHILESY;
-"to"        		return TOSY;
-"until"	        	return UNTILSY;
-"with"      		return WITHSY;
-"not"       		return NOTSY;
-"div"       		return IDIV;
-"mod"	          	return IMOD;
-"and"		        return ANDOP;
-"or"		        return OROP;
-"in"		        return INOP;
-"goto"		        return GOTOSY;
+"program"               return PROGRAMSY;
+"label"                 return LABELSY;
+"procedure"             return PROCEDURESY;
+"const"                 return CONSTSY;
+"type"                  return TYPESY;
+"array"                 return ARRAYSY;
+"packed"                return PACKEDSY;
+"of"                    return OFSY;
+"end"                   return ENDSY;
+"file"                  return FILESY;
+"record"                return RECORDSY;
+"set"                   return SETSY;
+"var"                   return VARSY;
+"case"                  return CASESY;
+"forward"               return FORWARDSY;
+"function"              return FUNCTIONSY;
+"begin"                 return BEGINSY;
+"else"                  return ELSESY;
+"if"                    return IFSY;
+"then"                  return THENSY;
+"do"                    return DOSY;
+"downto"                return DOWNTOSY;
+"for"                   return FORSY;
+"repeat"                return REPEATSY;
+"while"                 return WHILESY;
+"to"                    return TOSY;
+"until"                 return UNTILSY;
+"with"                  return WITHSY;
+"not"                   return NOTSY;
+"div"                   return IDIV;
+"mod"                   return IMOD;
+"and"                   return ANDOP;
+"or"                    return OROP;
+"in"                    return INOP;
+"goto"                  return GOTOSY;
 
-[a-z][a-z0-9]*	    return IDENT;
+[a-z][a-z0-9]*          return IDENT;
 
-.                   yyerror("invalid character");
+.                       yyerror("invalid character");
